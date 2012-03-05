@@ -17,9 +17,7 @@ class Luhnybin
 
   def check_and_mask line
     to_replace = []
-    count = 0
-    start = 0
-    len = 0
+    count, start, len = [0, 0, 0]
     while start + len <= line.length 
       c = line[start + len]
       len += 1
@@ -32,8 +30,7 @@ class Luhnybin
       end
       if count == 16 || (start + len == line.length && count >= 14)
         start += 1
-        count = 0
-        len = 0
+        count, len = [0, 0]
       end
     end
     chars = line.chars.to_a
@@ -50,8 +47,7 @@ class Luhnybin
 
   def luhn_check? word
     chars = word.chars.to_a.reverse
-    i = 0
-    sum = 0
+    i, sum = [0, 0]
     chars.each do |c|
       num = DIGITS[c]
       if num
