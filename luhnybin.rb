@@ -15,31 +15,36 @@ class Luhnybin
     end
   end
 
+  def digit? c
+    DIGITS[c]
+  end
   def check_and_mask line
-    to_replace = []
+    substr_to_mask = []
     count, start, len = [0, 0, 0]
     while start + len <= line.length 
-      c = line[start + len]
+      count += digit?(line[start + len]) ? 1 : 0
       len += 1
-      count += DIGITS[c] ? 1 : 0
       if count >= 14
         word = line[start, len]
         if luhn_check? word
-          to_replace << [start, len]
+           substr_to_mask << [start, len]
         end
       end
-      if count == 16 || (start + len == line.length && count >= 14)
+      #move start if we are at max size
+      if count == 16
         start += 1
         count, len = [0, 0]
+      #move start and len if we can move start but not end
+      elsif (start + len == line.length && count >= 14)
+        start += 1
+        len -= 1
+        count -= 1
       end
     end
     chars = line.chars.to_a
-    to_replace.each do |start, len|
+    substr_to_mask.each do |start, len|
       len.times do |i|
-        c = chars[start + i]
-        if (DIGITS[c])
-          chars[start + i] = 'X'
-        end
+        chars[start + i] = 'X' if digit?(chars[start + i])
       end
     end
     chars.join
